@@ -1,6 +1,8 @@
- 
-const fs=require("fs")
-const text=fs.readFileSync("./txt/input.txt","utf-8")
-const textOut="this is text about avocado " +text
-fs.writeFileSync("./txt/output.txt",textOut);
-console.log("file is written");
+ const http= require("http")
+const server=http.createServer((request,response)=>{
+    console.log(request)
+    response.end("Hello from the server");
+});
+server.listen(3000,"127.0.0.1",()=>{
+    console.log("Listening to request on port 3000")
+});
