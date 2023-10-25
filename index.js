@@ -2,8 +2,13 @@
  const url=require("url")
  const fs=require("fs");
 const { dirname } = require("path");
+
 const server=http.createServer((request,response)=>{
-    const pathName=request.url
+
+const pathName=request.url
+const data=fs.readFileSync(`${__dirname}/dev-data/data.json`,"utf-8")
+const productData=JSON.parse(data);
+    
     if( pathName==="/" || pathName==="/overview"){
         response.end("This is an overview page.");
     }
@@ -11,13 +16,11 @@ const server=http.createServer((request,response)=>{
         response.end("This is a product page.")
     }
     else if(pathName==="/api"){
-        fs.readFile(`${__dirname}/dev-data/data.json`,"utf-8",(err,data)=>{
-            const productData=JSON.parse(data);
+        
             response.writeHead(200,{
-                "Content-type:application/json"
+                "Content-type":"application/json"
             })
-            response.end(productData)
-        });
+            response.end(data)
 
     }
     else{
