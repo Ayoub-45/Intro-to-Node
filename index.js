@@ -1,19 +1,25 @@
  const http= require("http")
  const url=require("url")
  const fs=require("fs");
-const { dirname } = require("path");
-
+ const replaceTemplate = require('./modules/replaceTemplate');
+const data=fs.readFileSync(`${__dirname}/dev-data/data.json`,"utf-8")
+const templateOverview=fs.readFileSync(`${__dirname}/templates/template-overview.html`,"utf-8");
+const templateProduct=fs.readFileSync(`${__dirname}/templates/template-product.html`,"utf-8");
+const templateCard=fs.readFileSync(`${__dirname}/templates/template-card.html`,"utf-8")
 const server=http.createServer((request,response)=>{
 
 const pathName=request.url
-const data=fs.readFileSync(`${__dirname}/dev-data/data.json`,"utf-8")
 const productData=JSON.parse(data);
-    
+
+
     if( pathName==="/" || pathName==="/overview"){
-        response.end("This is an overview page.");
+        response.writeHead(200,{"Content-type":"text/html"});
+        const cardsHTML=productData.map(product=>replaceTemplate(templateCard,product)).join("")
+        const output=templateOverview.replace(/{%PRODUCT_CARDS%}/g,cardsHTML)         
+        response.end(output);
     }
     else if(pathName==="/product"){
-        response.end("This is a product page.")
+        response.end("templateProduct")
     }
     else if(pathName==="/api"){
         
