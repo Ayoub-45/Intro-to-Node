@@ -8,20 +8,21 @@ const templateProduct=fs.readFileSync(`${__dirname}/templates/template-product.h
 const templateCard=fs.readFileSync(`${__dirname}/templates/template-card.html`,"utf-8")
 const server=http.createServer((request,response)=>{
 
-const pathName=request.url
 const productData=JSON.parse(data);
-
-
-    if( pathName==="/" || pathName==="/overview"){
+const {query,pathname}=url.parse(request.url,true);
+    if( pathname==="/" || pathname==="/overview"){
         response.writeHead(200,{"Content-type":"text/html"});
         const cardsHTML=productData.map(product=>replaceTemplate(templateCard,product)).join("")
         const output=templateOverview.replace(/{%PRODUCT_CARDS%}/g,cardsHTML)         
         response.end(output);
     }
-    else if(pathName==="/product"){
-        response.end("templateProduct")
+    else if(pathname==="/product"){
+        response.writeHead(200,{"Content-type":"text/html"});
+        const product=productData[query.id];
+        const output=replaceTemplate(templateProduct,product); 
+        response.end(output)
     }
-    else if(pathName==="/api"){
+    else if(pathname==="/api"){
         
             response.writeHead(200,{
                 "Content-type":"application/json"
